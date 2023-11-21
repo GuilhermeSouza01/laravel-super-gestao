@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PrincipalController::class, 'index'])->name('site.index');
 Route::get('/sobre', [SobreController::class, 'index'])->name('site.sobre');
 Route::get('/contato', [ContatoController::class, 'contato'])->name('site.contato');
-Route::post('/contato', [ContatoController::class, 'contato'])->name('site.contato');
+Route::post('/contato', [ContatoController::class, 'salvar'])->name('site.contato');
 Route::get('/login', function () {
     return "Login";
 })->name('site.login');
