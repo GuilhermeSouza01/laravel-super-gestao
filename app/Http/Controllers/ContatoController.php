@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MotivoContato;
 use Illuminate\Http\Request;
 use App\Models\SiteContato;
 
@@ -31,24 +32,36 @@ class ContatoController extends Controller
         // $contato = new SiteContato();
         // $contato->create($request->all());
 
-        $motivo_contato = [
-            "1" => "Duvida",
-            "2" => "Elogio",
-            "3" => "Reclamacao",
-        ];
+        $motivo_contato = MotivoContato::all();
 
         return view("site.contato", ["motivo_contatos" => $motivo_contato]);
     }
 
     public function salvar(Request $request)
     {
-        $request->validate([
-            'nome' => 'required|min:3|max:40',
+
+        $regras =    [
+            'nome' => 'required|min:3|max:40|unique:site_contatos',
             'telefone' => 'required',
-            'email' => 'required',
-            'motivo_contato' => 'required',
+            'email' => 'email',
+            'motivo_contatos_id' => 'required',
             'mensagem' => 'required|max:2000',
-        ]);
-        // SiteContato::create($request->all());
+        ];
+
+        $feedbacks =  [
+
+            'nome.min' => 'O campo nome precisa ter no minimo 3 caracteres',
+            'nome.max' => 'O campo nome pode ter no maximo 40 caracteres',
+            'nome.unique' => 'O nome digitado já foi escolhido',
+            'email.email' => 'O email informado não é valido',
+
+            'mensagem.max' => 'A mensagem deve ter no maximo 2000 caracteres',
+            'required' => 'O campo :attribute precisa ser preenchido',
+        ];
+
+
+        $request->validate($regras, $feedbacks);
+        SiteContato::create($request->all());
+        return redirect()->route('site.index');
     }
 }
