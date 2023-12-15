@@ -49,6 +49,10 @@
                     </tbody>
                 </table>
 
+                {{ $fornecedores->appends($request)->links('pagination::bootstrap-4') }}
+
+                
+
             </div>
         </div>
     </div>
