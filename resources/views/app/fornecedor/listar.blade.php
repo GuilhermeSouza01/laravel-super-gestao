@@ -42,7 +42,7 @@
                         <td>
                             <a href="{{ route('app.fornecedor.editar', $fornecedor->id) }}">Editar</a>
                         </td>
-                        <td>Excluir</td>
+                        <td>     <a href="{{ route('app.fornecedor.excluir', $fornecedor->id) }}">Excluir</a></td>
                     </tr>
                @endforeach
             
@@ -50,6 +50,9 @@
                 </table>
 
                 {{ $fornecedores->appends($request)->links('pagination::bootstrap-4') }}
+
+                <br>
+                Exibindo {{$fornecedores->count()}} fornedores de {{ $fornecedores->total() }} ( de {{ $fornecedores->firstItem() }} a {{ $fornecedores->lastItem() }} )
 
                 
 
