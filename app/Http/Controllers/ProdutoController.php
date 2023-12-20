@@ -17,6 +17,10 @@ class ProdutoController extends Controller
     {
         $produtos = Produto::paginate(10);
 
+        // foreach ($produtos as $key => $produto) {
+        //     print_r($produto->getAttributes());
+        //     echo '<br><br>';
+        // }
 
         return view("app.produto.index", ["produtos" => $produtos, "request" => $request->all()]);
     }
@@ -83,8 +87,8 @@ class ProdutoController extends Controller
     public function edit(Produto $produto)
     {
         $unidades = Unidade::all();
-        // return view('app.produto.edit', ['produto' => $produto, 'unidades' => $unidades]);
-        return view('app.produto.create', ['produto' => $produto, 'unidades' => $unidades]);
+        return view('app.produto.edit', ['produto' => $produto, 'unidades' => $unidades]);
+        // return view('app.produto.create', ['produto' => $produto, 'unidades' => $unidades]);
     }
 
     /**
