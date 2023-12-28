@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pedido;
+use App\Models\PedidoProduto;
+use App\Models\Produto;
 use Illuminate\Http\Request;
 
 class PedidoProdutoController extends Controller
@@ -21,9 +24,11 @@ class PedidoProdutoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Pedido $pedido)
     {
-        //
+        $produtos = Produto::all();
+        // $pedido->produtos;
+        return view('app.pedido_produto.create', ['pedido' => $pedido, 'produtos' => $produtos]);
     }
 
     /**
@@ -32,9 +37,43 @@ class PedidoProdutoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Pedido $pedido)
     {
-        //
+        $regras = [
+            'produto_id' => 'exists:produtos,id',
+            'quantidade' => 'required',
+        ];
+
+        $feedback = [
+            'produto_id.exists' => 'O produto informado não existe',
+            'required' => 'O campo :attribute deve possuir um valor válido'
+        ];
+
+        $request->validate($regras, $feedback);
+        /*
+
+        $pedidoProduto = new PedidoProduto();
+        $pedidoProduto->pedido_id = $pedido->id;
+        $pedidoProduto->produto_id = $request->get('produto_id');
+        $pedidoProduto->quantidade = $request->get('quantidade');
+        $pedidoProduto->save();
+        */
+
+        /* 1 modo de fazer
+        $pedido->produtos()->attach(
+            $request->get('produto_id'),
+            ['quantidade' => $request->get('quantidade')]
+        );
+        */
+
+        // 2 modo passando um array associativo
+        $pedido->produtos()->attach(
+            [
+                $request->get('produto_id') => ['quantidade' => $request->get('quantidade')]
+            ]
+            );
+
+        return redirect()->route('pedido-produto.create', ['pedido' => $pedido->id]);
     }
 
     /**
@@ -77,8 +116,11 @@ class PedidoProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Pedido $pedido, Produto $produto)
     {
-        //
+        //detach (delete pelo relacionamento)
+        $pedido->produtos()->detach($produto->id);
+
+        return redirect()->route('pedido-produto.create', ['pedido' => $pedido->id]);
     }
 }

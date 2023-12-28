@@ -9,5 +9,5 @@ class PedidoProduto extends Model
 {
     use HasFactory;
 
-    protected $table = 'pedidos_produtos';
+    protected $table = 'pedido_produtos';
 }
